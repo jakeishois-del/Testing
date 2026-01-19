@@ -1,0 +1,207 @@
+<form class="babylon-system babylon-wrapper theme-{{sheetCfg.theme}}" autocomplete="off" style="--accent-color: {{sheetCfg.colors.accent}}; --energy-color: {{sheetCfg.colors.energy}}; --damage-color: {{sheetCfg.colors.damage}}; --shield-color: {{sheetCfg.colors.shield}};">
+  <header class="sheet-header bx-header">
+  <div class="bx-portrait-frame">
+    <img class="profile-img" src="{{img}}" title="{{actor.name}}" data-edit="img" />
+  </div>
+
+  <div class="bx-header-main">
+    <div class="bx-name-row">
+      <input class="actor-name" type="text" name="name" value="{{actor.name}}" placeholder="캐릭터 이름"/>
+      <div class="name-meta">
+        <div class="stack-row shield" title="쉴드 스택 (총 3칸)">
+          <span class="meta-item">쉴드</span>
+          <div class="stacks" aria-label="쉴드 스택">
+            {{#each shieldSlots as |s|}}
+              <span class="shield-slot {{#if s.filled}}filled{{/if}}" data-index="{{s.index}}"></span>
+            {{/each}}
+          </div>
+        </div>
+        <span class="meta-dot">•</span>
+        <div class="stack-row" title="피격 스택 (총 3칸)">
+          <span class="meta-item">스택</span>
+          <div class="stacks" data-action="stacks" aria-label="피격 스택">
+            {{#each stackSlots as |s|}}
+              <span class="stack-slot {{#if s.filled}}filled{{/if}}" data-index="{{s.index}}"></span>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bx-subrow">
+      <div class="dice-row">
+        <div class="pair">
+          <label>이름</label>
+          <input class="dx" type="text" name="system.babylon.nameDie" value="{{system.babylon.nameDie}}" placeholder="D4/D6/D8/D10/D12"/>
+        </div>
+        <div class="pair">
+          <label>별무리</label>
+          <input class="dx" type="text" name="system.babylon.constellationDie" value="{{system.babylon.constellationDie}}" placeholder="D4/D6/D8/D10/D12"/>
+        </div>
+      </div>
+
+
+
+      <div class="energy-wrap" title="에너지 (필살기 자원)">
+        <div class="energy-label">⚡ {{system.combat.energy}} / {{system.combat.energyMax}}</div>
+        <div class="energy-bar">
+          <div class="bar" style="width: {{energyPct}}%"></div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <div class="bx-header-side">
+    <div class="header-actions">
+      <button type="button" class="pill" data-action="test-roll" title="주사위 굴림"><i class="fas fa-dice"></i> 판정</button>
+      <button type="button" class="pill" data-action="join-combat" title="전투 참가"><i class="fas fa-swords"></i> 전투</button>
+      <button type="button" class="pill ghost" data-action="apply-token" title="초상 이미지를 프로토타입 토큰에 적용"><i class="fas fa-user-circle"></i> 토큰화</button>
+      <button type="button" class="pill ghost" data-action="open-sheet-config" title="시트 테마/색상"><i class="fas fa-palette"></i> 테마</button>
+    </div>
+  </div>
+</header>
+
+
+  <nav class="tabs modern" data-group="primary">
+    <a class="item" data-tab="profile"><i class="fas fa-id-card"></i> 프로필</a>
+    <a class="item" data-tab="combat"><i class="fas fa-crosshairs"></i> 전투</a>
+    <a class="item" data-tab="skills"><i class="fas fa-bolt"></i> 스킬</a>
+    <a class="item" data-tab="notes"><i class="fas fa-sticky-note"></i> 메모</a>
+  </nav>
+
+<section class="sheet-body modern">
+    <div class="tab" data-group="primary" data-tab="profile">
+      <section class="card">
+        <h2>분야(1) + 이름 + 별무리 → <span class="hi">상위 두 주사위 합</span></h2>
+        <div class="fields-grid">
+          <label class="pill-radio"><input type="radio" name="system.babylon.selectField" value="charm"><span>매력·인상</span></label>
+          <input class="dx" type="text" name="system.babylon.fields.charm" value="{{system.babylon.fields.charm}}"/>
+          <label class="pill-radio"><input type="radio" name="system.babylon.selectField" value="body"><span>신체·체력</span></label>
+          <input class="dx" type="text" name="system.babylon.fields.body" value="{{system.babylon.fields.body}}"/>
+          <label class="pill-radio"><input type="radio" name="system.babylon.selectField" value="tech"><span>기술·기교</span></label>
+          <input class="dx" type="text" name="system.babylon.fields.tech" value="{{system.babylon.fields.tech}}"/>
+          <label class="pill-radio"><input type="radio" name="system.babylon.selectField" value="will"><span>의지·용기</span></label>
+          <input class="dx" type="text" name="system.babylon.fields.will" value="{{system.babylon.fields.will}}"/>
+        </div>
+        <div class="judge-ui" style="margin-top:12px;padding:8px;border:1px dashed var(--color-border,#666);border-radius:10px;">
+          <h3 style="margin:0 0 .5rem 0;">분야 판정</h3>
+          <div class="row" style="display:flex;align-items:center;gap:8px;">
+            <label for="field-dc">DC</label>
+            <input id="field-dc" type="number" min="0" step="1" placeholder="예: 12" style="width:80px;"/>
+            <button type="button" class="mini" data-action="field-check">판정</button>
+            <span id="field-check-result" class="check-result" title="최근 판정 결과">—</span>
+          </div>
+          <p class="hint" style="opacity:.8;margin:.25rem 0 0 0;">현재 선택된 분야 + 이름 + 별무리 중 <b>상위 두 주사위 합</b>으로 판정합니다.</p>
+        </div>
+
+
+        <div class="toggles">
+          <label class="toggle"><input type="checkbox" name="system.babylon.options.bond" {{#if system.babylon.options.bond}}checked{{/if}}/> 유대 보너스(2d4kh1)</label>
+        </div>
+      </section>
+
+      <!-- 시트 설정 UI는 헤더의 톱니 버튼으로 이동 -->
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="skills">
+      <div class="skill-toolbar modern">
+        <div class="skill-left">
+          <div class="skill-search">
+            <i class="fas fa-search"></i>
+            <input type="text" value="{{skillList.query}}" placeholder="스킬 검색…" data-action="skill-query"/>
+            <button type="button" class="mini ghost" data-action="skill-clear" title="검색 지우기"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+
+        <div class="skill-right">
+          <select data-action="skill-kind" title="종류">
+            <option value="all" {{#if (eq skillList.kind "all")}}selected{{/if}}>전체</option>
+            <option value="basic" {{#if (eq skillList.kind "basic")}}selected{{/if}}>기본공격</option>
+            <option value="skill" {{#if (eq skillList.kind "skill")}}selected{{/if}}>스킬</option>
+            <option value="ultimate" {{#if (eq skillList.kind "ultimate")}}selected{{/if}}>필살기</option>
+            <option value="passive" {{#if (eq skillList.kind "passive")}}selected{{/if}}>패시브</option>
+          </select>
+
+          <select data-action="skill-field" title="분야">
+            <option value="all" {{#if (eq skillList.field "all")}}selected{{/if}}>전체</option>
+            <option value="charm" {{#if (eq skillList.field "charm")}}selected{{/if}}>매력·인상</option>
+            <option value="body" {{#if (eq skillList.field "body")}}selected{{/if}}>신체·체력</option>
+            <option value="tech" {{#if (eq skillList.field "tech")}}selected{{/if}}>기술·기교</option>
+            <option value="will" {{#if (eq skillList.field "will")}}selected{{/if}}>의지·용기</option>
+          </select>
+
+          <select data-action="skill-sort" title="정렬">
+            <option value="name-asc" {{#if (eq skillList.sort "name-asc")}}selected{{/if}}>이름 ↑</option>
+            <option value="name-desc" {{#if (eq skillList.sort "name-desc")}}selected{{/if}}>이름 ↓</option>
+            <option value="kind" {{#if (eq skillList.sort "kind")}}selected{{/if}}>종류</option>
+            <option value="field" {{#if (eq skillList.sort "field")}}selected{{/if}}>분야</option>
+          </select>
+
+          <select data-action="skill-group" title="그룹">
+            <option value="none" {{#if (eq skillList.group "none")}}selected{{/if}}>그룹 없음</option>
+            <option value="kind" {{#if (eq skillList.group "kind")}}selected{{/if}}>종류별</option>
+            <option value="field" {{#if (eq skillList.group "field")}}selected{{/if}}>분야별</option>
+          </select>
+
+          <button type="button" class="pill" data-action="new-skill"><i class="fas fa-plus"></i> 스킬 추가</button>
+        </div>
+      </div>
+
+      <div class="skill-scroll">
+        {{#each skillGroups}}
+          {{#if label}}<div class="skill-group-title">{{label}}</div>{{/if}}
+
+          <ol class="skill-list modern">
+            {{#each skills}}
+              <li class="skill modern" data-item-id="{{id}}">
+                <div class="skill-main">
+                  <div class="drag" title="드래그"><i class="fas fa-grip-vertical"></i></div>
+                  <img class="skill-icon" src="{{img}}" alt=""/>
+                  <div class="skill-title">
+                    <div class="skill-name">{{name}}</div>
+                    <div class="skill-sub">
+                      <span class="pill ghost">{{kindText}}</span>
+                                            {{#if range}}<span class="pill tag">{{range}}</span>{{/if}}
+                      {{#if energyText}}<span class="pill energy">{{energyText}}</span>{{/if}}
+                      {{#if tagsText}}<span class="pill tag">{{tagsText}}</span>{{/if}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="skill-actions">
+                  <button type="button" class="pill small use" data-action="use-skill" data-item-id="{{id}}"><i class="fas fa-dice-d20"></i> 사용</button>
+                  <button type="button" class="pill small ghost" data-action="edit-skill" data-item-id="{{id}}"><i class="fas fa-pen"></i></button>
+                  <button type="button" class="pill small danger" data-action="delete-skill" data-item-id="{{id}}"><i class="fas fa-trash"></i></button>
+                </div>
+              </li>
+            {{/each}}
+          </ol>
+        {{/each}}
+      </div>
+    </div>
+
+    
+<div class="tab" data-group="primary" data-tab="combat">
+      <section class="card">
+        <h2>전투</h2>
+        <div class="combat-grid">
+          <label>피격 스택</label><input type="number" name="system.combat.damageStacks" value="{{system.combat.damageStacks}}" min="0" max="3" step="1"/>
+          <label>방어(기준)</label><input type="number" name="system.combat.defense" value="{{system.combat.defense}}"/>
+          <input type="hidden" name="system.combat.weapon" value="{{system.combat.weapon}}"/><!-- 무기 주사위 UI 숨김 -->
+          <label>에너지</label><input type="number" name="system.combat.energy" value="{{system.combat.energy}}"/>
+          <label>에너지 Max</label><input type="number" name="system.combat.energyMax" value="{{system.combat.energyMax}}"/>
+        </div>
+        <div class="actions">
+          <button type="button" class="roll" data-action="init"><i class="fas fa-flag-checkered"></i> 우선권</button>
+          <button type="button" class="roll" data-action="hit"><i class="fas fa-burst"></i> 피격(+1)</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="notes">
+      <section class="card"><h2>메모</h2><textarea name="system.babylon.notes" rows="10">{{system.babylon.notes}}</textarea></section>
+    </div>
+  </section>
+</form>

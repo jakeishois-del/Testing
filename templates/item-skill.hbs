@@ -1,0 +1,62 @@
+<form class="babylon-system item-sheet modern" autocomplete="off">
+  <header class="item-header neon">
+    <div class="iconBox">
+      <img class="icon-preview" src="{{item.img}}" title="아이콘 미리보기 (클릭)"/>
+      <button type="button" class="mini" data-action="pick-icon"><i class="fas fa-image"></i> 아이콘</button>
+      <button type="button" class="mini" data-action="send-skill" title="(Actor에 소속된 경우) 스킬 사용"><i class="fas fa-bolt"></i> 사용</button>
+    </div>
+    <div class="titleBox">
+      <input class="item-name" type="text" name="name" value="{{item.name}}" placeholder="스킬 이름"/>
+      <div class="hint" style="opacity:.75;font-size:12px;">주사위 없이 <b>이름 · 설명 · 효과</b>만 채팅에 표시됩니다.</div>
+    </div>
+  </header>
+  <section class="sheet-body">
+    <div class="grid">
+      <label>종류</label>
+      <select name="system.kind">
+        <option value="basic" {{#if (eq system.kind "basic")}}selected{{/if}}>기본공격</option>
+        <option value="skill" {{#if (eq system.kind "skill")}}selected{{/if}}>스킬</option>
+        <option value="ultimate" {{#if (eq system.kind "ultimate")}}selected{{/if}}>필살기</option>
+        <option value="passive" {{#if (eq system.kind "passive")}}selected{{/if}}>패시브</option>
+      </select>
+      <label>분야</label>
+      <select name="system.fieldKey">
+        <option value="charm" {{#if (eq system.fieldKey "charm")}}selected{{/if}}>매력·인상</option>
+        <option value="body" {{#if (eq system.fieldKey "body")}}selected{{/if}}>신체·체력</option>
+        <option value="tech" {{#if (eq system.fieldKey "tech")}}selected{{/if}}>기술·기교</option>
+        <option value="will" {{#if (eq system.fieldKey "will")}}selected{{/if}}>의지·용기</option>
+      </select>
+      <label>사거리</label><input type="text" name="system.range" value="{{system.range}}" placeholder="예: 근접, 5m, 10m"/>
+      <label>태그</label><input type="text" name="system.tags" value="{{tagsString}}" placeholder="예: 화염, 이동, 제어 (콤마로 구분)"/>
+      <label>에너지 획득</label><input type="number" name="system.energyGain" value="{{system.energyGain}}" placeholder="예: 20, 30"/>
+      <label>필요 에너지</label><input type="number" name="system.requiresEnergy" value="{{system.requiresEnergy}}" placeholder="필살기 100, 그 외 0"/>
+      <label>사용 전 에너지 추가</label><input type="checkbox" name="system.energyGainFirst" {{#if system.energyGainFirst}}checked{{/if}}/>
+      <label>사용 후 에너지</label>
+      <select name="system.energyResetTo">
+        <option value="" {{#unless system.energyResetTo}}selected{{/unless}}>증가/소모 계산만</option>
+        <option value="0" {{#if (eq system.energyResetTo 0)}}selected{{/if}}>0으로 리셋</option>
+        <option value="100" {{#if (eq system.energyResetTo 100)}}selected{{/if}}>100으로 설정</option>
+      </select>
+      <label>사운드 파일</label>
+      <div class="row">
+        <input type="text" name="system.sound" value="{{system.sound}}" placeholder="예: sounds/impact.ogg"/>
+        <button type="button" class="mini" data-action="pick-sound"><i class="fas fa-music"></i> 찾아보기</button>
+      </div>
+      <label>볼륨</label>
+      <input type="range" min="0" max="1" step="0.05" name="system.soundVolume" value="{{system.soundVolume}}"/>
+    </div>
+          <h3>상태이상</h3>
+      <label>내장 상태 연결</label>
+      <select name="system.status.id">
+        <option value="" {{#unless system.status.id}}selected{{/unless}}>(연결 안 함)</option>
+        {{#each statusChoices as |opt|}}
+          <option value="{{opt.id}}" {{#if (eq ../system.status.id opt.id)}}selected{{/if}}>{{opt.label}}</option>
+        {{/each}}
+      </select>
+      <label>적용 버튼 표시</label><input type="checkbox" name="system.status.applyButton" {{#if system.status.applyButton}}checked{{/if}}/>
+      <label>이름</label><input type="text" name="system.status.name" value="{{system.status.name}}" placeholder="예: 기절, 출혈"/>
+      <label>지속</label><input type="text" name="system.status.duration" value="{{system.status.duration}}" placeholder="예: 2라운드, 장면"/>
+      <label>효과 설명</label><textarea name="system.status.note" rows="3" placeholder="간단한 설명">{{system.status.note}}</textarea>
+      <h3>설명</h3><textarea name="system.description" rows="6">{{system.description}}</textarea>
+  </section>
+</form>

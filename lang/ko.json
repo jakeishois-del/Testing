@@ -1,0 +1,11 @@
+{
+  "BABYLON": {
+    "Entropy": "엔트로피",
+    "Skill": {
+      "Use": "사용",
+      "Cost": "소모",
+      "Stack": "스택",
+      "Phase": "페이즈"
+    }
+  }
+}

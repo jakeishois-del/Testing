@@ -1,0 +1,272 @@
+<form class="babylon-system babylon-wrapper boss-sheet theme-{{sheetCfg.theme}}" autocomplete="off" style="--accent-color: {{sheetCfg.colors.accent}}; --energy-color: {{sheetCfg.colors.energy}}; --damage-color: {{sheetCfg.colors.damage}}; --shield-color: {{sheetCfg.colors.shield}};">
+  <!-- ===== Unified Header (same frame as character) ===== -->
+  <header class="sheet-header bx-header boss-header">
+  <div class="bx-portrait-frame">
+    <img class="profile-img" src="{{img}}" title="{{actor.name}}" data-edit="img" />
+  </div>
+
+  <div class="bx-header-main">
+    <div class="bx-name-row">
+      <input class="actor-name" type="text" name="name" value="{{actor.name}}" placeholder="보스 이름"/>
+      <div class="name-meta">
+        <span class="meta-item">🛡 {{system.combat.shieldStacks}} / {{system.combat.shieldStacksMax}}</span>
+        <span class="meta-dot">•</span>
+        <span class="meta-item">🟥 {{system.combat.damageStacks}} / {{system.combat.damageStacksMax}}</span>
+        <span class="meta-dot">•</span>
+        <span class="meta-item">⚡ {{system.combat.energy}} / {{system.combat.energyMax}}</span>
+      </div>
+    </div>
+
+    <div class="bx-subrow">
+      <div class="bx-actions-row">
+        <button type="button" class="pill ghost" data-action="reset-combat" title="보호막/피격/에너지 0으로 초기화">초기화</button>
+        <button type="button" class="pill ghost" data-action="apply-token" title="초상 이미지를 프로토타입 토큰에 적용"><i class="fas fa-user-circle"></i> 토큰화</button>
+        <button type="button" class="pill ghost" data-action="open-sheet-config" title="시트 테마/색상"><i class="fas fa-palette"></i> 테마</button>
+      </div>
+
+      <div class="energy-wrap" title="에너지 (필살기 자원)">
+        <div class="energy-label">⚡ {{system.combat.energy}} / {{system.combat.energyMax}}</div>
+        <div class="energy-bar">
+          <div class="bar" style="width: {{energyPct}}%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  <!-- ===== Unified Tabs (same as character) ===== -->
+  <nav class="tabs modern" data-group="primary">
+    <a class="item" data-tab="profile"><i class="fas fa-id-card"></i> 프로필</a>
+    <a class="item" data-tab="combat"><i class="fas fa-crosshairs"></i> 전투</a>
+    <a class="item" data-tab="gimmick"><i class="fas fa-puzzle-piece"></i> 기믹</a>
+    <a class="item" data-tab="skills"><i class="fas fa-bolt"></i> 스킬</a>
+    <a class="item" data-tab="notes"><i class="fas fa-sticky-note"></i> 메모</a>
+  </nav>
+
+  <section class="sheet-body modern">
+    <!-- ===== Profile (optional, kept for unified layout) ===== -->
+    <div class="tab" data-group="primary" data-tab="profile">
+      <section class="card">
+        <h2>프로필</h2>
+        <p class="hint">보스 전용 정보는 자유롭게 적어도 됩니다.</p>
+        <textarea name="system.babylon.note" rows="6" placeholder="보스 프로필/특이사항">{{system.babylon.note}}</textarea>
+      </section>
+    </div>
+
+    <!-- ===== Combat ===== -->
+    <div class="tab" data-group="primary" data-tab="combat">
+      <div class="boss-panels">
+        <!-- Shield -->
+        <div class="boss-panel">
+          <div class="panel-title">
+            <span>🛡 보호막</span>
+            <span class="panel-mini">{{shieldPct}}%</span>
+          </div>
+
+          <div class="panel-controls">
+            <button type="button" class="mini" data-action="shield-dec5">-5</button>
+            <button type="button" class="mini" data-action="shield-dec1">-1</button>
+
+            <div class="curmax">
+              <input type="number" class="small" name="system.combat.shieldStacks" value="{{system.combat.shieldStacks}}"/>
+              <span>/</span>
+              <input type="number" class="small" name="system.combat.shieldStacksMax" value="{{system.combat.shieldStacksMax}}"/>
+            </div>
+
+            <button type="button" class="mini" data-action="shield-inc1">+1</button>
+            <button type="button" class="mini" data-action="shield-inc5">+5</button>
+            <button type="button" class="mini ghost" data-action="shield-max">MAX</button>
+            <button type="button" class="mini ghost" data-action="shield-zero">0</button>
+          </div>
+
+          <div class="stack-grid shield-grid">
+            {{#each shieldSlots}}
+              <button type="button" class="shield-slot {{#if filled}}filled{{/if}}" data-action="set-shield" data-value="{{value}}" title="{{value}}"></button>
+            {{/each}}
+            {{#if shieldSlotsOverflow}}
+              <div class="stack-overflow">+{{shieldSlotsOverflow}}</div>
+            {{/if}}
+          </div>
+
+          <progress class="boss-progress" value="{{system.combat.shieldStacks}}" max="{{system.combat.shieldStacksMax}}"></progress>
+          <div class="panel-sub">보호막이 남아있으면 먼저 소모됩니다.</div>
+        </div>
+
+        <!-- Damage -->
+        <div class="boss-panel">
+          <div class="panel-title">
+            <span>🟥 피격 스택</span>
+            <span class="panel-mini">{{damagePct}}%</span>
+          </div>
+
+          <div class="panel-controls">
+            <button type="button" class="mini" data-action="dmg-dec5">-5</button>
+            <button type="button" class="mini" data-action="dmg-dec1">-1</button>
+
+            <div class="curmax">
+              <input type="number" class="small" name="system.combat.damageStacks" value="{{system.combat.damageStacks}}"/>
+              <span>/</span>
+              <input type="number" class="small" name="system.combat.damageStacksMax" value="{{system.combat.damageStacksMax}}"/>
+            </div>
+
+            <button type="button" class="mini" data-action="dmg-inc1">+1</button>
+            <button type="button" class="mini" data-action="dmg-inc5">+5</button>
+            <button type="button" class="mini ghost" data-action="dmg-max">MAX</button>
+            <button type="button" class="mini ghost" data-action="dmg-zero">0</button>
+          </div>
+
+          <div class="stack-grid damage-grid">
+            {{#each damageSlots}}
+              <button type="button" class="stack-slot {{#if filled}}filled{{/if}}" data-action="set-dmg" data-value="{{value}}" title="{{value}}"></button>
+            {{/each}}
+            {{#if damageSlotsOverflow}}
+              <div class="stack-overflow">+{{damageSlotsOverflow}}</div>
+            {{/if}}
+          </div>
+
+          <progress class="boss-progress danger" value="{{system.combat.damageStacks}}" max="{{system.combat.damageStacksMax}}"></progress>
+          <div class="panel-sub">보호막이 0이면 피격 스택이 증가합니다.</div>
+        </div>
+
+        <!-- Energy -->
+        <div class="boss-panel">
+          <div class="panel-title">
+            <span>⚡ 에너지</span>
+            <span class="panel-mini">{{energyPct}}%</span>
+          </div>
+
+          <div class="panel-controls">
+            <button type="button" class="mini" data-action="energy-dec10">-10</button>
+            <button type="button" class="mini" data-action="energy-dec1">-1</button>
+
+            <div class="curmax">
+              <input type="number" class="small" name="system.combat.energy" value="{{system.combat.energy}}"/>
+              <span>/</span>
+              <input type="number" class="small" name="system.combat.energyMax" value="{{system.combat.energyMax}}"/>
+            </div>
+
+            <button type="button" class="mini" data-action="energy-inc1">+1</button>
+            <button type="button" class="mini" data-action="energy-inc10">+10</button>
+            <button type="button" class="mini ghost" data-action="energy-max">MAX</button>
+            <button type="button" class="mini ghost" data-action="energy-zero">0</button>
+            <button type="button" class="mini ghost" data-action="energy-half">50%</button>
+          </div>
+
+          <div class="energy-wrap">
+            <div class="energy-bar" title="{{system.combat.energy}} / {{system.combat.energyMax}}">
+              <div class="bar" style="width: {{energyPct}}%;"></div>
+            </div>
+            <div class="energy-label">{{system.combat.energy}} / {{system.combat.energyMax}}</div>
+          </div>
+
+          <div class="panel-sub">스킬 사용 시 자동으로 증감됩니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Gimmick ===== -->
+    <div class="tab" data-group="primary" data-tab="gimmick">
+      <section class="boss-gimmicks in-tab">
+        <div class="gimmick-head">
+          <div class="title">기믹 체크</div>
+          <div class="muted">30칸</div>
+          <div class="spacer"></div>
+          <button type="button" class="mini ghost" data-action="reset-gimmicks">초기화</button>
+        </div>
+
+        <div class="gimmick-grid">
+          {{#each gimmickSlots}}
+            <button type="button" class="gimmick-slot {{#if checked}}checked{{/if}}" data-action="toggle-gimmick" data-index="{{index}}" title="{{label}}"></button>
+          {{/each}}
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== Skills ===== -->
+    <div class="tab" data-group="primary" data-tab="skills">
+      <div class="skill-toolbar modern">
+        <div class="skill-left">
+          <div class="skill-search">
+            <i class="fas fa-search"></i>
+            <input type="text" value="{{skillList.query}}" placeholder="스킬 검색…" data-action="skill-query"/>
+            <button type="button" class="mini ghost" data-action="skill-clear" title="검색 지우기"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+
+        <div class="skill-right">
+          <select data-action="skill-kind" title="종류">
+            <option value="all" {{#if (eq skillList.kind "all")}}selected{{/if}}>전체</option>
+            <option value="basic" {{#if (eq skillList.kind "basic")}}selected{{/if}}>기본공격</option>
+            <option value="skill" {{#if (eq skillList.kind "skill")}}selected{{/if}}>스킬</option>
+            <option value="ultimate" {{#if (eq skillList.kind "ultimate")}}selected{{/if}}>필살기</option>
+            <option value="passive" {{#if (eq skillList.kind "passive")}}selected{{/if}}>패시브</option>
+          </select>
+
+          <select data-action="skill-field" title="분야">
+            <option value="all" {{#if (eq skillList.field "all")}}selected{{/if}}>전체</option>
+            <option value="charm" {{#if (eq skillList.field "charm")}}selected{{/if}}>매력·인상</option>
+            <option value="body" {{#if (eq skillList.field "body")}}selected{{/if}}>신체·체력</option>
+            <option value="tech" {{#if (eq skillList.field "tech")}}selected{{/if}}>기술·기교</option>
+            <option value="will" {{#if (eq skillList.field "will")}}selected{{/if}}>의지·용기</option>
+          </select>
+
+          <select data-action="skill-sort" title="정렬">
+            <option value="name-asc" {{#if (eq skillList.sort "name-asc")}}selected{{/if}}>이름 ↑</option>
+            <option value="name-desc" {{#if (eq skillList.sort "name-desc")}}selected{{/if}}>이름 ↓</option>
+            <option value="kind" {{#if (eq skillList.sort "kind")}}selected{{/if}}>종류</option>
+            <option value="field" {{#if (eq skillList.sort "field")}}selected{{/if}}>분야</option>
+          </select>
+
+          <select data-action="skill-group" title="그룹">
+            <option value="none" {{#if (eq skillList.group "none")}}selected{{/if}}>그룹 없음</option>
+            <option value="kind" {{#if (eq skillList.group "kind")}}selected{{/if}}>종류별</option>
+            <option value="field" {{#if (eq skillList.group "field")}}selected{{/if}}>분야별</option>
+          </select>
+
+          <button type="button" class="pill" data-action="new-skill"><i class="fas fa-plus"></i> 스킬 추가</button>
+        </div>
+      </div>
+
+      <div class="skill-scroll">
+        {{#each skillGroups}}
+          {{#if label}}<div class="skill-group-title">{{label}}</div>{{/if}}
+
+          <ol class="skill-list modern">
+            {{#each skills}}
+              <li class="skill modern" data-item-id="{{id}}">
+                <div class="skill-main">
+                  <div class="drag" title="드래그"><i class="fas fa-grip-vertical"></i></div>
+                  <img class="skill-icon" src="{{img}}" alt=""/>
+                  <div class="skill-title">
+                    <div class="skill-name">{{name}}</div>
+                    <div class="skill-sub">
+                      <span class="pill ghost">{{kindText}}</span>
+                                            {{#if range}}<span class="pill tag">{{range}}</span>{{/if}}
+                      {{#if energyText}}<span class="pill energy">{{energyText}}</span>{{/if}}
+                      {{#if tagsText}}<span class="pill tag">{{tagsText}}</span>{{/if}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="skill-actions">
+                  <button type="button" class="pill small use" data-action="use-skill" data-item-id="{{id}}"><i class="fas fa-dice-d20"></i> 사용</button>
+                  <button type="button" class="pill small ghost" data-action="edit-skill" data-item-id="{{id}}"><i class="fas fa-pen"></i></button>
+                  <button type="button" class="pill small danger" data-action="delete-skill" data-item-id="{{id}}"><i class="fas fa-trash"></i></button>
+                </div>
+              </li>
+            {{/each}}
+          </ol>
+        {{/each}}
+      </div>
+    </div>
+
+    <!-- ===== Notes ===== -->
+    <div class="tab" data-group="primary" data-tab="notes">
+      <section class="card">
+        <h2>메모</h2>
+        <textarea name="system.babylon.note" rows="14" placeholder="보스 메모">{{system.babylon.note}}</textarea>
+      </section>
+    </div>
+  </section>
+</form>

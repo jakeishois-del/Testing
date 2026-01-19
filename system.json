@@ -1,0 +1,49 @@
+{
+  "name": "babylon-system",
+  "title": "Babylon System (Clean + EnergyBar + Themes)",
+  "description": "Babylon System v12 (clean build). Unified portrait frame (180px), tokenize, energy gain on skill use, boss gimmick stacks/shields. Adds per-actor Sheet Theme selector (independent from RPG bar colors).",
+  "version": "3.1.2-textblack-portraitleft",
+  "compatibility": {
+    "minimum": "12",
+    "verified": "12"
+  },
+  "authors": [
+    {
+      "name": "하 카루"
+    }
+  ],
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "styles/sheet.css"
+  ],
+  "languages": [
+    {
+      "lang": "ko",
+      "name": "Korean (한국어)",
+      "path": "lang/ko.json"
+    }
+  ],
+  "packs": [
+    {
+      "label": "Babylon Skills",
+      "name": "babylon-skills",
+      "path": "packs/babylon-skills.db",
+      "type": "Item"
+    }
+  ],
+  "grid": {
+    "distance": 1,
+    "units": "m"
+  },
+  "primaryTokenAttribute": "system.combat.damageStacks",
+  "secondaryTokenAttribute": "system.combat.energy",
+  "Actor": {
+    "types": [
+      "character",
+      "npc",
+      "boss"
+    ]
+  }
+}

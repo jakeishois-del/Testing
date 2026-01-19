@@ -1,0 +1,35 @@
+<div class="babylon-chat-card babylon-skill-card {{kind}}">
+  <header class="bl-head">
+    <img class="bl-icon" src="{{iconImg}}" alt="" />
+    <div class="bl-titles">
+      <div class="bl-name">{{skill.name}}</div>
+      <div class="bl-meta">
+        <span class="bl-pill">{{kindText}}</span>
+        <span class="bl-dot">•</span>
+        <span class="bl-field">{{fieldText}}</span>
+        {{#if range}}<span class="bl-dot">•</span><span class="bl-range">📏 {{range}}</span>{{/if}}
+        {{#if tagsText}}<span class="bl-dot">•</span><span class="bl-tags">{{tagsText}}</span>{{/if}}
+      </div>
+    </div>
+  </header>
+
+  <section class="bl-body">
+    {{#if descText}}
+    <div class="bl-block">
+      <div class="bl-block-title">설명</div>
+      <div class="bl-block-text">{{descText}}</div>
+    </div>
+    {{/if}}
+
+    {{#if effectText}}
+    <div class="bl-block">
+      <div class="bl-block-title">효과</div>
+      <div class="bl-block-text">{{effectText}}</div>
+    </div>
+    {{/if}}
+
+    {{#if energyText}}
+    <div class="bl-energy">{{energyText}}</div>
+    {{/if}}
+  </section>
+</div>

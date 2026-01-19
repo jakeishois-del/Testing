@@ -1,0 +1,1206 @@
+/* =========================================================
+   3.0.0 PORTRAIT REBUILD (VERY VISIBLE)
+   - Fix portrait frame being gigantic
+   - Unify boss + character portrait sizing
+   - Make header layout stable regardless of Foundry quirks
+   ========================================================= */
+
+.babylon-system .sheet-header.bx-header{
+  /* Portrait frame size (BOSS + CHARACTER unified)
+     User request: smaller than 220px */
+  --bx-portrait-w: 180px;
+  --bx-portrait-ratio: 3 / 4;
+
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--bx-portrait-w) 1fr 220px;
+  gap: 12px;
+  padding: 10px 12px;
+  align-items: start;
+
+  background: linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.08));
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+}
+
+/* Boss header keeps 2 columns (no right side panel) */
+.babylon-system .sheet-header.bx-header.boss-header{
+  grid-template-columns: var(--bx-portrait-w) 1fr;
+}
+
+.babylon-system .sheet-header.bx-header .bx-portrait-frame{
+  width: var(--bx-portrait-w);
+  aspect-ratio: var(--bx-portrait-ratio);
+  /* User request: nudge portrait slightly to the left */
+  margin-left: -6px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.20);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10), 0 10px 22px rgba(0,0,0,0.25);
+}
+
+.babylon-system .sheet-header.bx-header .profile-img{
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center 18%;
+  display: block;
+  border: 0;
+  border-radius: 0;
+}
+
+.babylon-system .sheet-header.bx-header .bx-header-main{
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+.babylon-system .sheet-header.bx-header .bx-header-side{
+  min-width: 0;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  align-items:stretch;
+  justify-content:space-between;
+}
+
+.babylon-system .sheet-header.bx-header .bx-header-side .header-actions{
+  display:flex;
+  gap:8px;
+  justify-content:flex-end;
+}
+
+.babylon-system .sheet-header.bx-header .bx-header-side .energy-wrap{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.babylon-system .sheet-header.bx-header .bx-header-side .energy-bar{
+  width:100%;
+}
+
+/* --- Energy bar visibility in header (requested yellow underline) --- */
+.babylon-system .sheet-header.bx-header .bx-header-side .energy-wrap{
+  align-items:flex-end;
+}
+.babylon-system .sheet-header.bx-header .bx-header-side .energy-label{
+  text-align:right;
+  font-weight:800;
+  letter-spacing:0.2px;
+}
+.babylon-system .sheet-header.bx-header .bx-header-side .energy-bar{
+  height:4px;
+  background: rgba(0,0,0,0.14);
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.10);
+}
+.babylon-system .sheet-header.bx-header .bx-header-side .energy-bar .bar{
+  box-shadow: 0 0 10px var(--energy-color);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--energy-color) 45%, transparent);
+}
+.babylon-system .sheet-header.bx-header .bx-name-row{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* Character header: use the empty right area (requested "우측" fix)
+   - Reserve a right panel inside the header
+   - Pin action buttons (판정/전투) to top-right
+   - Pin energy to bottom-right
+*/
+.babylon-system .sheet-header.bx-header:not(.boss-header) .bx-name-row{
+  position: relative;
+  /* match portrait height (ratio 3/4 => height = w * 4/3) */
+  min-height: calc(var(--bx-portrait-w) * 4 / 3);
+  padding-right: 190px; /* space for right-side panel */
+}
+
+.babylon-system .sheet-header.bx-header:not(.boss-header) .header-actions{
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  margin: 0;
+  justify-content: flex-end;
+}
+
+.babylon-system .sheet-header.bx-header:not(.boss-header) .energy-wrap{
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 180px;
+}
+
+.babylon-system .sheet-header.bx-header:not(.boss-header) .name-meta{
+  max-width: calc(100% - 10px);
+}
+
+/* Mobile: revert to normal flow */
+@media (max-width: 760px){
+  .babylon-system .sheet-header.bx-header:not(.boss-header) .bx-name-row{
+    min-height: 0;
+    padding-right: 0;
+  }
+  .babylon-system .sheet-header.bx-header:not(.boss-header) .header-actions,
+  .babylon-system .sheet-header.bx-header:not(.boss-header) .energy-wrap{
+    position: static;
+    width: auto;
+  }
+}
+
+
+/* =========================================================
+   v3.0.3 COMFORT LAYOUT
+   - Use real 3rd column for actions/energy (no absolute hacks)
+   ========================================================= */
+.babylon-system .sheet-header.bx-header:not(.boss-header) .bx-name-row{
+  position: static !important;
+  min-height: 0 !important;
+  padding-right: 0 !important;
+}
+.babylon-system .sheet-header.bx-header:not(.boss-header) .header-actions,
+.babylon-system .sheet-header.bx-header:not(.boss-header) .energy-wrap{
+  position: static !important;
+  width: auto !important;
+}
+
+/* Character header: clean dice row (2 columns) */
+.babylon-system .sheet-header.bx-header .dice-row{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items:center;
+}
+
+
+.babylon-system .sheet-header.bx-header .bx-subrow{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.babylon-system .sheet-header.bx-header .bx-actions-row{
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+@media (max-width: 760px){
+  .babylon-system .sheet-header.bx-header{
+    --bx-portrait-w: 120px;
+    grid-template-columns: 1fr;
+    align-items:stretch;
+  }
+  .babylon-system .sheet-header.bx-header .bx-portrait-frame{
+    width:100%;
+    max-width: 320px;
+    justify-self:center;
+    margin-left: 0;
+  }
+  .babylon-system .sheet-header.bx-header .bx-header-side{
+    flex-direction:row;
+    align-items:center;
+  }
+  .babylon-system .sheet-header.bx-header .bx-header-side .energy-wrap{
+    flex:1;
+  }
+}
+
+/* Make it impossible for any legacy rule to blow the portrait up */
+.babylon-system .sheet-header.bx-header img.profile-img{
+  max-height: 100% !important;
+}
+
+/* If some other module injects min-width, keep portrait small */
+.babylon-system .sheet-header.bx-header .bx-portrait-frame{min-width:0 !important;}
+
+
+.babylon-system.sheet .window-content{padding:0;}
+.babylon-wrapper{height:100%;}
+
+/* === Layout: vertical tabs (character sheets) === */
+.babylon-wrapper{
+  display:grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 176px 1fr;
+  grid-template-areas:
+    "header header"
+    "tabs body";
+  height:100%;
+}
+.babylon-wrapper > .sheet-header.modern{grid-area:header;}
+.babylon-wrapper > .sheet-header.bx-header{grid-area:header;}
+.babylon-wrapper > nav.tabs.modern{grid-area:tabs;}
+.babylon-wrapper > section.sheet-body.modern{grid-area:body; overflow:auto; padding:12px 14px;}
+
+/* Vertical tab styling (icon + text) */
+.babylon-wrapper > nav.tabs.modern{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:6px;
+  padding:10px 8px;
+  border-right:1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  overflow:auto;
+}
+.babylon-wrapper > nav.tabs.modern .item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:9px 10px;
+  border-radius:12px;
+  font-weight:800;
+  opacity:0.88;
+  border:1px solid rgba(255,255,255,0.08);
+  background: rgba(0,0,0,0.14);
+}
+.babylon-wrapper > nav.tabs.modern .item:hover{
+  opacity:1;
+  background: rgba(0,0,0,0.18);
+  border-color: rgba(255,255,255,0.12);
+}
+.babylon-wrapper > nav.tabs.modern .item.active{
+  opacity:1;
+  border-color: color-mix(in srgb, var(--accent-color, #d9a441) 70%, rgba(255,255,255,0.12));
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25), inset 0 0 0 1px rgba(255,255,255,0.10);
+  background: color-mix(in srgb, var(--accent-color, #d9a441) 22%, rgba(0,0,0,0.18));
+}
+.babylon-wrapper > nav.tabs.modern .item i{width:18px; text-align:center; opacity:0.95;}
+
+
+.sheet-header.modern{
+  /* Portrait frame is fixed small to avoid per-actor config glitches */
+  --portrait-size: 130px;
+  --portrait-fit: cover;
+  --portrait-size-clamped: 130px;
+
+  position:relative;
+  overflow:hidden;
+  display:grid;
+  grid-template-columns: var(--portrait-size-clamped) 1fr;
+  gap:14px;
+  padding:14px 16px 10px 16px;
+  align-items:center;
+
+  /* simple header background (banner removed) */
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.sheet-header.modern > *{ position:relative; z-index:1; }
+
+
+/* Portrait: boss-like 3:4 frame (no Foundry max-height squish) */
+.babylon-system .sheet-header.modern .portrait{
+  position:relative;
+  width: var(--portrait-size-clamped);
+  height:auto;
+  aspect-ratio: 3 / 4;
+  border-radius:14px;
+  overflow:hidden;
+  background: rgba(0,0,0,0.18);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+.babylon-system .sheet-header.modern .profile-img{
+  width:100% !important;
+  height:100% !important;
+  max-width:none !important;
+  max-height:none !important;
+  border-radius:0;
+  object-fit:var(--portrait-fit, cover) !important;
+  object-position:center 20%;
+  display:block;
+  background:transparent;
+  box-shadow:none;
+  cursor:default;
+}
+.babylon-system .apply-token{position:absolute !important; right:8px !important; bottom:8px !important; width:auto !important; display:inline-flex !important; align-items:center !important; justify-content:center !important; gap:6px !important; font-size:12px !important; padding:3px 8px !important; border-radius:999px !important; background:rgba(0,0,0,.45) !important;}
+.header-main{display:flex; flex-direction:column; gap:10px; min-width:0; justify-content:center;}
+.dice-row{display:grid; grid-template-columns: 160px 160px 1fr; gap:12px; align-items:center;}
+.dice-row .pair{display:flex; gap:6px; align-items:center;}
+.dice-row label{font-size:12px; opacity:.8;}
+.dx{text-transform:uppercase; width:92px; text-align:center;}
+.header-actions{display:flex; gap:8px; justify-content:flex-end;}
+button.pill{border-radius:999px; padding:6px 12px; font-weight:600;}
+button.pill.ghost{padding:6px 10px; background:rgba(255,255,255,0.05); box-shadow:inset 0 0 0 1px rgba(255,255,255,0.10);}
+button.pill.ghost:hover{background:rgba(255,255,255,0.08);}
+
+.energy-wrap{display:flex; align-items:center; gap:10px;}
+.energy-bar{position:relative; flex:1; height:14px; background:rgba(255,255,255,0.08); border-radius:999px; overflow:hidden; box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);}
+.energy-bar .bar{position:absolute; top:0; left:0; height:100%; background: var(--energy-color, rgba(255,200,70,0.95));}
+.energy-label{font-weight:700; font-size:12px;}
+
+/* --- Header name row --- */
+.name-row{display:flex; align-items:center; justify-content:space-between; gap:12px; min-width:0;}
+.actor-name{flex:1; font-size:24px; font-weight:900; letter-spacing:0.2px; background:transparent; border:1px solid transparent; padding:4px 8px; border-radius:10px;}
+.actor-name:focus{outline:none; border-color:rgba(255,255,255,0.18); background:rgba(0,0,0,0.15);}
+.name-meta{display:flex; align-items:center; gap:10px; opacity:0.85; font-size:12px; flex-wrap:wrap; row-gap:6px;}
+.meta-dot{opacity:0.6;}
+
+/* --- 3-hit stack (replaces HP) --- */
+.stack-row{display:flex; align-items:center; gap:6px;}
+.stacks{display:flex; gap:5px; padding:3px 8px; border-radius:999px; background:rgba(0,0,0,0.12); box-shadow:inset 0 0 0 1px rgba(255,255,255,0.10);}
+.stack-slot{width:14px; height:14px; border-radius:4px; background:rgba(255,255,255,0.10); box-shadow:inset 0 0 0 1px rgba(255,255,255,0.12); cursor:default;}
+.stack-slot:hover{background:rgba(255,255,255,0.16);}
+.stack-slot.filled{background: var(--damage-color, rgba(255,70,70,0.95)); box-shadow:0 3px 8px rgba(0,0,0,0.28), inset 0 0 0 1px rgba(255,255,255,0.10);}
+
+.shield-slot{width:14px; height:14px; border-radius:4px; background:rgba(255,255,255,0.10); box-shadow:inset 0 0 0 1px rgba(255,255,255,0.12); cursor:default;}
+.shield-slot:hover{background:rgba(255,255,255,0.16);}
+.shield-slot.filled{background: var(--shield-color, rgba(70,160,255,0.95)); box-shadow:0 3px 8px rgba(0,0,0,0.28), inset 0 0 0 1px rgba(255,255,255,0.10);}
+
+
+@media (max-width: 860px){
+  .sheet-header.modern{
+    grid-template-columns: 1fr;
+    align-items:stretch;
+  }
+  .babylon-system .sheet-header.modern .portrait{
+    width:100%;
+    max-width:320px;
+    justify-self:center;
+  }
+  .dice-row{grid-template-columns: 1fr; gap:10px;}
+  .header-actions{justify-content:flex-start;}
+}
+
+/* Boss sheet */
+.boss-sheet .boss-header{
+  display:flex;
+  gap:16px;
+  padding:14px 14px 10px;
+  align-items:flex-start;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.boss-sheet .portrait-wrap{
+  width:160px;
+  height:160px;
+  border-radius:16px;
+  overflow:hidden;
+  background:rgba(255,255,255,0.06);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.10);
+  flex-shrink:0;
+}
+.boss-sheet .portrait{width:100%; height:100%; object-fit:cover; display:block;}
+.boss-sheet .header-main{flex:1; min-width:0;}
+.boss-sheet .name-row{display:flex; align-items:center; justify-content:space-between; gap:12px; min-width:0;}
+.boss-sheet .charname{margin:0; flex:1; min-width:0;}
+.boss-sheet .charname input{font-size:28px; width:100%; padding:6px 10px;}
+.boss-sheet .quick-actions{display:flex; gap:8px; align-items:center; flex-shrink:0;}
+.boss-sheet .boss-panels{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap:12px;
+  margin-top:10px;
+}
+@media (max-width: 860px){
+  .boss-sheet .boss-header{flex-direction:column; align-items:stretch;}
+  .boss-sheet .portrait-wrap{width:100%; height:220px;}
+  .boss-sheet .boss-panels{grid-template-columns:1fr;}
+}
+.boss-sheet .boss-panel{
+  padding:9px 10px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.04);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+.boss-sheet .panel-title{
+  font-weight:800;
+  margin-bottom:6px;
+  opacity:0.95;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+}
+.boss-sheet .panel-mini{font-size:12px; opacity:0.75; font-weight:700;}
+.boss-sheet .panel-controls{display:flex; flex-wrap:wrap; align-items:center; gap:6px;}
+.boss-sheet .boss-num{width:78px; text-align:center;}
+.boss-sheet .boss-split{opacity:0.7; padding:0 4px;}
+.boss-sheet .boss-progress{width:100%; height:10px; margin-top:8px;}
+.boss-sheet .panel-sub{font-size:12px; opacity:0.75; margin-top:6px; line-height:1.25;}
+
+.boss-sheet .stack-slots{display:flex; flex-wrap:wrap; gap:4px; margin-top:8px;}
+.boss-sheet .stack-chip{
+  width:14px; height:14px;
+  border-radius:4px;
+  background:rgba(255,255,255,0.10);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.12);
+  cursor:default;
+}
+.boss-sheet .stack-chip:hover{background:rgba(255,255,255,0.16);}
+.boss-sheet .stack-chip.shield.filled{
+  background:linear-gradient(180deg, rgba(80,170,255,0.95), rgba(25,90,180,0.95));
+  box-shadow:0 3px 8px rgba(0,0,0,0.28), inset 0 0 0 1px rgba(255,255,255,0.10);
+}
+.boss-sheet .stack-chip.damage.filled{
+  background:linear-gradient(180deg, rgba(255,70,70,0.95), rgba(190,20,20,0.95));
+  box-shadow:0 3px 8px rgba(0,0,0,0.28), inset 0 0 0 1px rgba(255,255,255,0.10);
+}
+.boss-sheet .slots-more{font-size:11px; opacity:0.75; padding-left:4px; align-self:center;}
+
+/* --- Portrait embellishment --- */
+.babylon-system .sheet-header.modern .portrait:after{content:""; position:absolute; inset:-2px; border-radius:14px; pointer-events:none; box-shadow:0 0 0 1px rgba(255,255,255,0.10);}
+
+/* Badge (small overlay image) */
+.babylon-system .sheet-header.modern .portrait .badge-img{
+  position:absolute;
+  top:10px;
+  left:10px;
+  width:var(--badge-size, 44px);
+  height:var(--badge-size, 44px);
+  object-fit:contain;
+  object-position:center;
+  border-radius:10px;
+  background:rgba(0,0,0,0.22);
+  box-shadow:0 8px 18px rgba(0,0,0,0.25), inset 0 0 0 1px rgba(255,255,255,0.10);
+  pointer-events:none;
+}
+
+/* --- Tabs polish --- */
+.tabs.modern{display:flex; gap:6px; padding:9px 10px; position:sticky; top:0; z-index:5; backdrop-filter:blur(6px); background:rgba(0,0,0,0.12); border-bottom:1px solid rgba(255,255,255,0.06);}
+.tabs.modern .item{padding:7px 11px; border-radius:10px; font-weight:700; opacity:0.9;}
+.tabs.modern .item.active{opacity:1; background:rgba(255,255,255,0.08); box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);}
+
+
+.sheet-body.modern{flex:1; overflow:hidden; padding:0 12px 12px 12px; display:flex; flex-direction:column;}
+.sheet-body .tab{height:100%; overflow:auto;}
+
+/* v3.0.3 comfort: keep main cards readable width */
+.babylon-system .sheet-body.modern .tab > section.card{
+  max-width: 940px;
+  margin: 10px auto;
+  padding: 14px 16px;
+}
+
+
+.card{background:rgba(255,255,255,0.03); border-radius:12px; padding:12px; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.06);}
+.card h2{margin:0 0 10px; font-size:16px;}
+.hi{color:#ffd166;}
+
+.fields-grid{display:grid; grid-template-columns: 1fr 120px; gap:10px 12px; align-items:center;}
+.pill-radio{display:flex; align-items:center; gap:8px; padding:4px 8px; border-radius:999px; background:rgba(255,255,255,0.06); box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);}
+.pill-radio input{margin:0;}
+.toggle{display:inline-flex; align-items:center; gap:6px; margin-top:8px;}
+
+.list-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
+.skill-list{display:flex; flex-direction:column; gap:6px; margin:0; padding:0; list-style:none;}
+
+/* --- Boss skill tab (search / filter + card list) --- */
+.skill-toolbar.modern{display:flex; gap:10px; align-items:center; justify-content:space-between; padding:10px 4px 12px 4px; position:relative; top:auto; z-index:1; backdrop-filter: blur(6px); background:rgba(0,0,0,0.10); border-bottom:1px solid rgba(255,255,255,0.06);}
+.skill-toolbar.modern .skill-left{flex:1; min-width:180px;}
+.skill-toolbar.modern .skill-right{display:flex; gap:6px; align-items:center; flex-wrap:wrap; justify-content:flex-end;}
+.skill-toolbar.modern select{background:rgba(0,0,0,0.20); border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:6px 8px; height:32px;}
+.skill-search{display:flex; gap:6px; align-items:center; background:rgba(0,0,0,0.20); border:1px solid rgba(255,255,255,0.12); border-radius:12px; padding:6px 10px;}
+.skill-search i{opacity:.8;}
+.skill-search input{flex:1; min-width:120px; background:transparent; border:0; outline:none;}
+.skill-search .mini.ghost{padding:2px 8px;}
+
+.skill-group-title{margin:12px 6px 8px 6px; font-size:14px; font-weight:900; opacity:.9;}
+
+.skill-list.modern{display:flex; flex-direction:column; gap:8px; list-style:none; margin:0; padding:8px 2px 16px 2px;}
+.skill.modern{display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:center; background:rgba(255,255,255,0.04); border-radius:14px; padding:9px 10px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07);}
+.skill.modern:hover{background:rgba(255,255,255,0.06);}
+.skill.modern .skill-main{display:flex; gap:10px; align-items:center; min-width:0;}
+.skill.modern .drag{opacity:.6; cursor:grab; padding:0 4px; user-select:none;}
+.skill.modern .skill-icon{width:34px; height:34px; border-radius:10px; object-fit:cover; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.10);}
+.skill.modern .skill-title{min-width:0; display:flex; flex-direction:column; gap:4px;}
+.skill.modern .skill-name{font-weight:900; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.skill.modern .skill-sub{display:flex; gap:6px; flex-wrap:wrap; align-items:center;}
+.skill.modern .pill{font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(255,255,255,0.08); box-shadow:inset 0 0 0 1px rgba(255,255,255,0.06); white-space:nowrap;}
+.skill.modern .pill.ghost{background:rgba(255,255,255,0.04); opacity:.9;}
+.skill.modern .pill.tag{background:rgba(255,255,255,0.05);}
+.skill.modern .pill.energy{background:linear-gradient(90deg, rgba(255,209,102,0.35), rgba(86,149,246,0.25));}
+.skill.modern .skill-actions{display:flex; gap:6px; align-items:center;}
+
+button.mini.ghost{background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.10);}
+
+.skill.row{display:grid; grid-template-columns: 1fr auto; gap:8px; align-items:center; background:rgba(255,255,255,0.03); border-radius:10px; padding:8px 10px; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.05);}
+.skill .left{display:grid; grid-template-columns: 28px 1fr; gap:8px; align-items:center;}
+.babylon-system .skill, .babylon-system .skill *, .babylon-system .skill .name-wrap, .babylon-system .skill .meta, .babylon-system .skill input.skill-name { writing-mode: horizontal-tb !important; text-orientation: mixed !important; transform: none !important; }
+.name-wrap{display:flex; align-items:center; gap:6px; min-width:0;}
+input.skill-name{background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:2px 6px; width:100%; font-weight:700;}
+.skill .badge{font-size:10px; padding:2px 6px; border-radius:999px; background:rgba(255,255,255,0.08); white-space:nowrap;}
+.skill .badge.ult{background:linear-gradient(90deg, rgba(255,215,0,.6), rgba(255,120,0,.6)); color:#222; font-weight:800;}
+.skill .meta{font-size:12px; opacity:.85; white-space:normal;}
+.skill .right{display:flex; gap:6px;}
+.skill .right.show-on-hover{opacity:.0; transition:opacity .15s ease;}
+.skill.row:hover .right.show-on-hover{opacity:1;}
+
+button.mini{font-size:12px; padding:3px 8px; border-radius:8px;}
+button.mini.danger{background:#7a2e2e;}
+button.use{font-weight:800;}
+
+.combat-grid{display:grid; grid-template-columns: 140px 1fr 140px 1fr; gap:10px 12px; align-items:center;}
+textarea{width:100%;}
+
+.chat-message.babylon-chat{border-left:4px solid rgba(86,149,246,0.9); background:linear-gradient(180deg, rgba(86,149,246,0.07), transparent);}
+
+.consumable-list .tag{display:inline-block;min-width:36px;white-space:nowrap;text-align:center;padding:0 4px;border-radius:4px}
+.consumable-list .qty{margin-left:6px;opacity:.8}
+.consumable .btns button{margin-left:4px}
+
+/* icon + layout */
+.consumable-list .icon,
+.item-list .icon,
+.tab[data-tab="inventory"] .icon,
+.item-sheet .profile img,
+.item-sheet .sheet-header img,
+.app.sheet .icon { width:32px; height:32px; max-width:32px; max-height:32px; object-fit:contain; }
+
+/* Foundry 기본 아이템 시트가 뜰 때(혹시 모를 경우) 큰 프로필 이미지 축소 */
+.app.sheet.item .sheet-header img.profile,
+.app.sheet.item img.profile,
+.item-sheet img.profile{width:64px !important; height:64px !important; max-width:64px !important; max-height:64px !important; object-fit:contain !important;}
+.item-sheet .sheet-header { display:grid; grid-template-columns:40px 1fr; gap:8px; align-items:center; }
+.item-sheet .sheet-body { padding:8px; }
+.item-sheet .grid.two { display:grid; grid-template-columns:1fr 1fr; gap:8px; align-items:center; }
+.item-sheet textarea { width:100%; }
+.consumable-list li.consumable { display:grid; grid-template-columns:auto 1fr auto auto auto; gap:8px; align-items:center; }
+.equip-toggle { display:inline-flex; gap:6px; align-items:center; font-size:12px; opacity:.85; }
+.derived { margin-top:8px; opacity:.75; }
+
+/* --- Skill item sheet header (no-dice) --- */
+.babylon-system.item-sheet.modern .item-header.neon{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:12px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+}
+.babylon-system.item-sheet.modern .iconBox{display:flex; flex-direction:column; gap:6px; align-items:stretch;}
+.babylon-system.item-sheet.modern .icon-preview{width:64px; height:64px; border-radius:12px; object-fit:cover; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.12);} 
+.babylon-system.item-sheet.modern .titleBox{flex:1; min-width:0; display:flex; flex-direction:column; gap:6px;}
+.babylon-system.item-sheet.modern input.item-name{width:100%; font-size:20px; font-weight:900; background:transparent; border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:6px 10px;}
+.babylon-system.item-sheet.modern input.item-name:focus{outline:none; background:rgba(0,0,0,0.12);} 
+
+
+/* Hard hide any residual inventory/damage UI */
+.tab[data-tab="inventory"], .inventory, .items, .equipment, .gear, .bag, .backpack,
+button[data-action="damage"], .roll-damage, .damage-roll, [data-action="calc-damage"] { display: none !important; }
+
+/* HP bar styles */
+.hp-wrap{display:flex;align-items:center;gap:10px;margin:4px 0;}
+.hp-bar{position:relative;flex:1;height:14px;background:rgba(255,255,255,0.06);border-radius:999px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);}
+.hp-bar .bar{position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(90deg, rgba(255,80,80,0.9), rgba(200,0,0,0.9));}
+.hp-label{font-weight:700;font-size:12px;line-height:1;}
+
+
+/* --- UI Revamp (cards, badges, buttons) --- */
+.babylon-system .card{background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:8px 10px; margin:6px 0;}
+.babylon-system .card:hover{background:rgba(255,255,255,0.10);}
+.babylon-system .actions .btn{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.15); cursor:default;}
+.babylon-system .actions .btn.primary{border-color:transparent; box-shadow:0 0 0 1px rgba(255,255,255,0.15) inset;}
+.babylon-system .actions .btn:hover{filter:brightness(1.05);}
+.skill .range{margin-left:.5rem;opacity:.85;font-size:.9em}
+.skill .status{margin-left:.5rem;opacity:.9;font-size:.9em}
+
+
+
+/* Skill announce-only chat card */
+.bl-skill-card{padding:.4rem .6rem; border:1px solid rgba(255,255,255,0.15); border-radius:10px; background:rgba(255,255,255,0.05);}
+.bl-skill-title{margin:.1rem 0 .25rem; font-weight:700;}
+.bl-skill-desc{margin-top:.25rem; opacity:.95; white-space:pre-wrap;}
+
+
+
+/* --- Babylon v12 improvements: skill list controls + group headers --- */
+.skill-controls{display:flex; gap:6px; align-items:center; flex-wrap:wrap;}
+.skill-controls input.skill-search{min-width:180px;}
+.skill-controls select{min-width:120px;}
+.skill-group-header{padding:6px 10px; opacity:0.85; font-weight:700; letter-spacing:0.2px; border-left:3px solid rgba(255,255,255,0.25);}
+
+/* --- Babylon chat card --- */
+.babylon-chat-card{
+  border-radius:12px;
+  padding:10px 10px 9px 10px;
+  border:1px solid rgba(255,255,255,0.14);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.06));
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.20);
+}
+.babylon-chat-card.skill{border-left:4px solid rgba(86,149,246,0.95);}
+.babylon-chat-card.basic{border-left:4px solid rgba(180,180,180,0.9);}
+.babylon-chat-card.ultimate{border-left:4px solid rgba(255,190,0,0.95);}
+.babylon-chat-card.passive{border-left:4px solid rgba(200,120,255,0.95);}
+
+.babylon-chat-card .bl-head{display:flex; gap:10px; align-items:center; margin-bottom:8px;}
+.babylon-chat-card .bl-icon{width:36px; height:36px; border-radius:10px; object-fit:cover; box-shadow:0 6px 12px rgba(0,0,0,0.25), inset 0 0 0 1px rgba(255,255,255,0.12);}
+.babylon-chat-card .bl-name{font-weight:900; font-size:1.1em; letter-spacing:0.2px; line-height:1.1;}
+.babylon-chat-card .bl-meta{margin-top:2px; display:flex; flex-wrap:wrap; gap:6px; align-items:center; opacity:0.9; font-size:0.9em;}
+.babylon-chat-card .bl-dot{opacity:0.55;}
+.babylon-chat-card .bl-pill{display:inline-flex; align-items:center; padding:2px 7px; border-radius:999px; background:rgba(255,255,255,0.10); box-shadow:inset 0 0 0 1px rgba(255,255,255,0.10); font-weight:800; font-size:0.85em;}
+
+.babylon-chat-card .bl-body{display:flex; flex-direction:column; gap:8px;}
+.babylon-chat-card .bl-block{padding:8px 9px; border-radius:10px; background:rgba(0,0,0,0.10); box-shadow:inset 0 0 0 1px rgba(255,255,255,0.08);}
+.babylon-chat-card .bl-block-title{font-weight:900; font-size:0.9em; opacity:0.9; margin-bottom:4px;}
+.babylon-chat-card .bl-block-text{white-space:pre-wrap; opacity:0.95; line-height:1.25;}
+.babylon-chat-card .bl-energy{opacity:0.85; font-size:0.9em; white-space:pre-wrap;}
+
+/* ===== Boss sheet: skills tab layout fix (prevents toolbar from sinking/clipping) ===== */
+.boss-sheet .sheet-body.modern.boss-legacy{min-height:0;}
+.boss-sheet .sheet-body.modern.boss-legacy > .tab{flex:1; min-height:0; overflow:hidden;}
+/*
+  IMPORTANT: Foundry hides inactive .tab panels. Do NOT force-display the skills tab,
+  otherwise the skill search/filters stay visible even when switching to other tabs.
+*/
+.boss-sheet .tab[data-tab="skills"]{min-height:0;}
+.boss-sheet .tab[data-tab="skills"].active{display:flex; flex-direction:column;}
+.boss-sheet .tab[data-tab="skills"] .skill-toolbar.modern{position:relative; top:auto;}
+.boss-sheet .tab[data-tab="skills"] .skill-scroll{flex:1; min-height:0; overflow:auto; padding-bottom:12px;}
+.boss-sheet .tab[data-tab="notes"]{overflow:auto;}
+
+
+
+/* === Boss portrait frame fixes (frame height + non-banner aspect) === */
+.boss-sheet .sheet-header.boss-header{
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 260px;
+  overflow: visible !important;
+}
+
+/* Make the portrait frame look like a proper "frame" (taller, not a banner) */
+.boss-sheet .portrait-wrap{
+  width: 220px;
+  aspect-ratio: 3 / 4;
+  height: auto;
+  min-height: 260px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.06);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.16),
+    0 8px 18px rgba(0,0,0,0.18);
+}
+
+.boss-sheet .portrait{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Responsive: keep a vertical frame even when header stacks */
+@media (max-width: 860px){
+  .boss-sheet .portrait-wrap{
+    width: min(320px, 100%);
+    aspect-ratio: 3 / 4;
+    height: auto;
+    min-height: 320px;
+    margin-inline: auto;
+  }
+}
+
+
+/* =========================
+   Boss Sheet Rebuild (portrait + top layout)
+   ========================= */
+.boss-sheet{
+  /* Match character portrait sizing (adjustable, but capped) */
+  --portrait-size: 170px;
+  --portrait-size-clamped: 130px;
+}
+
+.boss-sheet .boss-top{
+  display:flex;
+  gap:16px;
+  padding:14px;
+}
+.boss-sheet .boss-top-left{
+  width: var(--portrait-size-clamped);
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.boss-sheet .boss-portrait-frame{
+  /* Big portrait like the original: stable 3:4 frame */
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  border-radius:14px;
+  overflow:hidden;
+  background: rgba(0,0,0,0.18);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+.boss-sheet .boss-portrait{
+  width:100% !important;
+  height:100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: var(--portrait-fit, cover) !important;
+  object-position: center 20%;
+  display:block;
+}
+.boss-sheet .boss-name-block{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.boss-sheet .boss-name{
+  flex:1;
+  height: 38px;
+  font-size: 20px;
+  font-weight: 800;
+}
+.boss-sheet .boss-top-right{
+  flex:1;
+  min-width: 520px;
+}
+
+.boss-sheet .boss-panels{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 980px){
+  .boss-sheet .boss-top{flex-direction:column;}
+  .boss-sheet .boss-top-left{width:auto;}
+  .boss-sheet .boss-panels{grid-template-columns: 1fr;}
+}
+
+.boss-sheet .boss-panel{
+  border-radius: 16px;
+  padding: 12px;
+  background: rgba(255,255,255,0.03);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07);
+}
+.boss-sheet .panel-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:8px;
+  font-weight:900;
+}
+.boss-sheet .panel-mini{opacity:0.8; font-size:12px; font-weight:800;}
+
+.boss-sheet .panel-controls{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+  margin-top:10px;
+}
+.boss-sheet .panel-controls .curmax{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.12);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+}
+.boss-sheet .panel-controls input.small{
+  width:64px;
+  height:28px;
+  text-align:center;
+  font-weight:800;
+}
+
+.boss-sheet .boss-progress{
+  width:100%;
+  height:10px;
+  margin-top:10px;
+  border-radius:999px;
+  overflow:hidden;
+}
+/* Progress bar color (uses sheet color vars) */
+.boss-sheet .boss-progress{ --progress-color: var(--shield-color, rgba(70,160,255,0.95)); background: transparent; }
+.boss-sheet .boss-progress.danger{ --progress-color: var(--damage-color, rgba(255,70,70,0.95)); }
+
+.boss-sheet progress.boss-progress::-webkit-progress-bar{ background: rgba(0,0,0,0.22); }
+.boss-sheet progress.boss-progress::-webkit-progress-value{ background: var(--progress-color); }
+.boss-sheet progress.boss-progress::-moz-progress-bar{ background: var(--progress-color); }
+
+.boss-sheet .panel-sub{
+  margin-top:8px;
+  font-size:12px;
+  opacity:0.8;
+}
+
+/* ===== Stacks (less dense) ===== */
+.boss-sheet .stack-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:10px;
+  align-items:center;
+}
+.boss-sheet .stack-grid .stack-slot,
+.boss-sheet .stack-grid .shield-slot{
+  width:18px;
+  height:18px;
+  border-radius:6px;
+  background: rgba(255,255,255,0.08);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+  cursor:default;
+}
+.boss-sheet .stack-grid .stack-slot.filled{
+  background: var(--damage-color, rgba(255,70,70,0.95));
+}
+.boss-sheet .stack-grid .shield-slot.filled{
+  background: var(--shield-color, rgba(70,160,255,0.95));
+}
+.boss-sheet .stack-overflow{
+  font-size:12px;
+  font-weight:900;
+  opacity:0.75;
+  padding-left:4px;
+}
+
+/* ===== Energy Bar ===== */
+.boss-sheet .energy-wrap{margin-top:10px;}
+.boss-sheet .energy-bar{
+  height: 12px;
+  border-radius: 999px;
+  overflow:hidden;
+  background: rgba(0,0,0,0.22);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07);
+}
+.boss-sheet .energy-bar .bar{
+  height:100%;
+  background: var(--energy-color, rgba(255,200,70,0.95));
+}
+.boss-sheet .energy-label{
+  margin-top:6px;
+  font-size:12px;
+  font-weight:900;
+  opacity:0.85;
+  text-align:right;
+}
+
+/* ===== Gimmick tracker (30 slots, spaced) ===== */
+.babylon-wrapper .boss-gimmicks{
+  margin: 0 14px 10px;
+  padding: 12px 12px 14px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.03);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07);
+}
+.babylon-wrapper .gimmick-head{
+  display:flex;
+  gap:10px;
+  align-items:baseline;
+  margin-bottom:10px;
+}
+.babylon-wrapper .gimmick-head .title{font-weight:900;}
+.babylon-wrapper .gimmick-head .muted{opacity:0.75; font-size:12px; font-weight:800;}
+.babylon-wrapper .gimmick-head .spacer{flex:1;}
+.babylon-wrapper .gimmick-grid{
+  display:grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 10px;
+  justify-items: center;
+  align-items:center;
+}
+.babylon-wrapper .gimmick-slot{
+  width:22px;
+  height:22px;
+  border-radius:7px;
+  background: rgba(255,255,255,0.08);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+  cursor:default;
+}
+.babylon-wrapper .gimmick-slot:hover{background: rgba(255,255,255,0.14);}
+.babylon-wrapper .gimmick-slot.checked{
+  background: rgba(255,180,60,0.95);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.22), inset 0 0 0 1px rgba(255,255,255,0.10);
+}
+@media (max-width: 860px){
+  .babylon-wrapper .gimmick-grid{grid-template-columns: repeat(6, 1fr);}
+}
+
+
+/* ===== Boss tabs: add breathing room for combat/gimmick ===== */
+.boss-sheet .tabs.modern.boss-tabs{position:sticky; top:0;}
+.boss-sheet .tab[data-tab="combat"],
+.boss-sheet .tab[data-tab="gimmick"],
+.boss-sheet .tab[data-tab="notes"]{
+  padding: 12px 4px 18px 4px;
+}
+
+.boss-sheet .boss-top.compact{
+  padding-bottom: 6px;
+}
+
+.babylon-wrapper .boss-gimmicks.in-tab{
+  margin: 0;
+}
+
+
+/* === Boss vertical tabs === */
+.boss-sheet .sheet-body.modern.boss-legacy{
+  display:grid;
+  grid-template-columns: 200px 1fr;
+  gap:12px;
+  padding:12px 14px;
+  align-items:start;
+}
+.boss-sheet .sheet-body.modern.boss-legacy > nav.tabs.modern{
+  position:sticky;
+  top:0;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  padding:10px 8px;
+  border-right:1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border-radius:14px;
+}
+.boss-sheet .sheet-body.modern.boss-legacy > nav.tabs.modern .item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:9px 10px;
+  border-radius:12px;
+  font-weight:900;
+  opacity:0.88;
+  border:1px solid rgba(255,255,255,0.08);
+  background: rgba(0,0,0,0.14);
+}
+.boss-sheet .sheet-body.modern.boss-legacy > nav.tabs.modern .item:hover{opacity:1; background: rgba(0,0,0,0.18); border-color: rgba(255,255,255,0.12);}
+.boss-sheet .sheet-body.modern.boss-legacy > nav.tabs.modern .item.active{
+  opacity:1;
+  border-color: color-mix(in srgb, var(--accent-color, #d9a441) 70%, rgba(255,255,255,0.12));
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25), inset 0 0 0 1px rgba(255,255,255,0.10);
+  background: color-mix(in srgb, var(--accent-color, #d9a441) 22%, rgba(0,0,0,0.18));
+}
+.boss-sheet .sheet-body.modern.boss-legacy > nav.tabs.modern .item i{width:18px; text-align:center; opacity:0.95;}
+.boss-sheet .sheet-body.modern.boss-legacy > .tab{ grid-column:2; }
+
+
+/* --- Character header energy bar: force visible --- */
+.babylon-system .sheet-header.bx-header .bx-header-side .energy-wrap{min-width:220px; align-items:flex-end;}
+.babylon-system .sheet-header.bx-header .bx-header-side .energy-bar{
+  position:relative;
+  width:100%;
+  height:12px;
+  background:rgba(0,0,0,0.25);
+  border-radius:999px;
+  overflow:hidden;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.14);
+}
+.babylon-system .sheet-header.bx-header .bx-header-side .energy-bar .bar{
+  position:absolute; top:0; left:0;
+  height:100%;
+  background: var(--energy-color, rgba(255,200,70,0.95));
+}
+
+
+
+
+/* === FIX: Character header energy bar visible (grey track) === */
+.babylon-system .sheet-header.bx-header .bx-header-main .energy-wrap{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+.babylon-system .sheet-header.bx-header .bx-header-main .energy-bar{
+  position: relative;
+  flex: 1;
+  height: 14px;
+  background: rgba(0,0,0,0.18);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+.babylon-system .sheet-header.bx-header .bx-header-main .energy-bar .bar{
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+}
+
+
+/* =========================================================
+   v3.1.0 SHEET THEMES
+   - Whole sheet look (background/cards/tabs) via a single selector
+   - Separate from RPG bar colors (accent/energy/damage/shield)
+   ========================================================= */
+
+/* Default tokens (obsidian) */
+.babylon-system{
+  /* User request: keep sheet text readable on light surfaces.
+     Use dark text by default (avoid unexpected pure-white text). */
+  --bl-text: rgba(20,20,20,0.95);
+  --bl-muted: rgba(20,20,20,0.70);
+  --bl-border: rgba(255,255,255,0.10);
+  --bl-border2: rgba(255,255,255,0.14);
+
+  --bl-surface-0: rgba(0,0,0,0.14);   /* header/tabs */
+  --bl-surface-1: rgba(255,255,255,0.06); /* cards */
+  --bl-surface-2: rgba(255,255,255,0.09); /* active / hover */
+  --bl-input: rgba(0,0,0,0.20);       /* inputs/search */
+}
+
+/* Theme palettes */
+.babylon-system.theme-azure{
+  --bl-surface-0: rgba(10, 24, 44, 0.30);
+  --bl-surface-1: rgba(110, 170, 255, 0.10);
+  --bl-surface-2: rgba(110, 170, 255, 0.16);
+  --bl-border: rgba(110, 170, 255, 0.16);
+  --bl-border2: rgba(110, 170, 255, 0.22);
+  --bl-input: rgba(10, 24, 44, 0.30);
+}
+
+.babylon-system.theme-crimson{
+  --bl-surface-0: rgba(44, 10, 18, 0.30);
+  --bl-surface-1: rgba(255, 90, 120, 0.10);
+  --bl-surface-2: rgba(255, 90, 120, 0.16);
+  --bl-border: rgba(255, 90, 120, 0.16);
+  --bl-border2: rgba(255, 90, 120, 0.22);
+  --bl-input: rgba(44, 10, 18, 0.30);
+}
+
+.babylon-system.theme-emerald{
+  --bl-surface-0: rgba(8, 34, 20, 0.30);
+  --bl-surface-1: rgba(70, 220, 160, 0.10);
+  --bl-surface-2: rgba(70, 220, 160, 0.16);
+  --bl-border: rgba(70, 220, 160, 0.16);
+  --bl-border2: rgba(70, 220, 160, 0.22);
+  --bl-input: rgba(8, 34, 20, 0.30);
+}
+
+.babylon-system.theme-parchment{
+  --bl-text: rgba(20,20,20,0.95);
+  --bl-muted: rgba(20,20,20,0.70);
+  --bl-border: rgba(0,0,0,0.14);
+  --bl-border2: rgba(0,0,0,0.18);
+
+  --bl-surface-0: rgba(255,255,255,0.70);
+  --bl-surface-1: rgba(255,255,255,0.88);
+  --bl-surface-2: rgba(255,255,255,0.95);
+  --bl-input: rgba(255,255,255,0.82);
+}
+
+/* Apply tokens */
+.babylon-system,
+.babylon-system input,
+.babylon-system select,
+.babylon-system textarea,
+.babylon-system button,
+.babylon-system button *,
+.babylon-system label,
+.babylon-system .editor,
+.babylon-system .editor-content,
+.babylon-system .editor-content *{
+  color: var(--bl-text) !important;
+}
+
+/* Foundry core styles often force white text on anchors/tabs.
+   Ensure theme text color always wins (esp. light 'parchment'). */
+.babylon-system a,
+.babylon-system .tabs.modern .item,
+.babylon-wrapper > nav.tabs.modern .item,
+.boss-sheet .sheet-body.modern.boss-legacy > nav.tabs.modern .item{
+  color: var(--bl-text) !important;
+}
+
+.babylon-system .name-meta,
+.babylon-system .meta-dot,
+.babylon-system .panel-mini,
+.babylon-system .panel-sub,
+.babylon-system .skill .meta,
+.babylon-system .skill .drag{
+  color: var(--bl-muted) !important;
+}
+
+.babylon-system ::placeholder{ 
+  color: color-mix(in srgb, var(--bl-text) 55%, transparent) !important;
+  opacity: 1;
+}
+
+/* Vertical tab column should also follow the selected theme */
+.babylon-wrapper > nav.tabs.modern,
+.boss-sheet .sheet-body.modern.boss-legacy > nav.tabs.modern{
+  background: var(--bl-surface-0);
+  border-right: 1px solid var(--bl-border);
+}
+
+.babylon-wrapper > nav.tabs.modern .item,
+.boss-sheet .sheet-body.modern.boss-legacy > nav.tabs.modern .item{
+  background: color-mix(in srgb, var(--bl-surface-1) 70%, transparent);
+  border: 1px solid var(--bl-border);
+}
+
+.babylon-wrapper > nav.tabs.modern .item:hover,
+.boss-sheet .sheet-body.modern.boss-legacy > nav.tabs.modern .item:hover{
+  background: color-mix(in srgb, var(--bl-surface-1) 60%, var(--bl-surface-2));
+  border-color: var(--bl-border2);
+}
+
+.babylon-wrapper > nav.tabs.modern .item.active,
+.boss-sheet .sheet-body.modern.boss-legacy > nav.tabs.modern .item.active{
+  background: var(--bl-surface-2);
+  border-color: var(--bl-border2);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.18), inset 0 0 0 1px var(--bl-border);
+}
+
+.babylon-system .sheet-header.bx-header{
+  background: linear-gradient(180deg, var(--bl-surface-0), rgba(0,0,0,0));
+  border-bottom: 1px solid var(--bl-border);
+}
+
+.babylon-system.theme-parchment .sheet-header.bx-header{
+  background: linear-gradient(180deg, var(--bl-surface-2), var(--bl-surface-0));
+}
+
+.babylon-system .tabs.modern{
+  background: var(--bl-surface-0);
+  border-bottom: 1px solid var(--bl-border);
+}
+
+.babylon-system .tabs.modern .item.active{
+  background: var(--bl-surface-2);
+  box-shadow: inset 0 0 0 1px var(--bl-border);
+}
+
+.babylon-system .card{
+  background: var(--bl-surface-1);
+  border: 1px solid var(--bl-border);
+}
+
+.babylon-system .card:hover{
+  background: color-mix(in srgb, var(--bl-surface-1) 80%, var(--bl-surface-2));
+}
+
+.babylon-system .skill-toolbar.modern{
+  background: var(--bl-surface-0);
+  border-bottom: 1px solid var(--bl-border);
+}
+
+.babylon-system .skill-search,
+.babylon-system .skill-toolbar.modern select,
+.babylon-system input.dx,
+.babylon-system input.actor-name,
+.babylon-system input[type="text"],
+.babylon-system input[type="number"],
+.babylon-system textarea{
+  background: var(--bl-input);
+  border-color: var(--bl-border2);
+}
+
+.babylon-system .skill.modern{
+  background: color-mix(in srgb, var(--bl-surface-1) 75%, transparent);
+  box-shadow: inset 0 0 0 1px var(--bl-border);
+}
+
+.babylon-system .skill.modern:hover{
+  background: color-mix(in srgb, var(--bl-surface-1) 65%, var(--bl-surface-2));
+}
+
+.babylon-system .pill,
+.babylon-system .pill-radio{
+  background: color-mix(in srgb, var(--bl-surface-1) 70%, transparent);
+  box-shadow: inset 0 0 0 1px var(--bl-border);
+}
+
+.babylon-system.theme-parchment .hi{ color: color-mix(in srgb, var(--accent-color) 55%, #222); }
