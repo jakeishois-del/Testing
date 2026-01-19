@@ -45,12 +45,9 @@
       "npc",
       "boss"
     ]
-  }
-}
-{
-  ...
+  },
+
   "url": "https://github.com/jakeishois-del/Testing",
   "manifest": "https://raw.githubusercontent.com/jakeishois-del/Testing/main/system.json",
   "download": "https://github.com/jakeishois-del/Testing/releases/download/v3.1.2-textblack-portraitleft/babylon-system.zip"
 }
-
